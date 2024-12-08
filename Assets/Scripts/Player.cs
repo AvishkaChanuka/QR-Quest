@@ -18,6 +18,9 @@ public class Player : MonoBehaviour
     Animator playerAnimator;
     GridManager gridManager;
 
+    [SerializeField]
+    LayerMask layerMask;
+
     private void Start()
     {
         gridManager = FindAnyObjectByType<GridManager>();
@@ -32,6 +35,8 @@ public class Player : MonoBehaviour
         ChangeAnimation();
 
         AnalizeMovablePath();
+
+        DoAction();
     }
 
     private void ChangeAnimation()
@@ -131,6 +136,7 @@ public class Player : MonoBehaviour
                 if (tile.tileType == Tile.TileType.BLACK)
                 {
                     tile.ChangeColor(1);
+                    tile.tileStatus = Tile.TileStatus.MOVABLE;
                 }
                 else
                 {
@@ -146,6 +152,7 @@ public class Player : MonoBehaviour
                 if (tile.tileType == Tile.TileType.BLACK)
                 {
                     tile.ChangeColor(1);
+                    tile.tileStatus = Tile.TileStatus.MOVABLE;
                 }
                 else
                 {
@@ -161,6 +168,7 @@ public class Player : MonoBehaviour
                 if (tile.tileType == Tile.TileType.BLACK)
                 {
                     tile.ChangeColor(1);
+                    tile.tileStatus = Tile.TileStatus.MOVABLE;
                 }
                 else
                 {
@@ -175,11 +183,29 @@ public class Player : MonoBehaviour
                 if (tile.tileType == Tile.TileType.BLACK)
                 {
                     tile.ChangeColor(1);
+                    tile.tileStatus = Tile.TileStatus.MOVABLE;
                 }
                 else
                 {
                     break;
                 }
+            }
+        }
+    }
+
+    public void DoAction()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePosition = Input.mousePosition;
+
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+            RaycastHit raycastHit;
+
+            if(Physics.Raycast(ray, out raycastHit, Mathf.Infinity, layerMask))
+            {
+                Tile tile = raycastHit.collider.gameObject.GetComponent<Tile>();
+                Debug.Log(tile.transform.position.x + " " + tile.transform.position.z);
             }
         }
     }

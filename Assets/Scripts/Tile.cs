@@ -10,6 +10,9 @@ public class Tile : MonoBehaviour
     public enum TilePosition { A = 1, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U };
     public TilePosition positionX, positionY;
 
+    public enum TileStatus { MOVABLE, COLLECTABLE, ATTACK, IDLE}
+    public TileStatus tileStatus;
+
     [SerializeField]
     private ColorManager colorManager;
 
@@ -19,6 +22,7 @@ public class Tile : MonoBehaviour
     {
         meshRenderer = GetComponent<MeshRenderer>();
         ResetColor();
+        tileStatus = TileStatus.IDLE;
     }
 
     public void ChangeColor(int colorNo)
