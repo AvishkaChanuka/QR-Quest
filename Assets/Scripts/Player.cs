@@ -21,6 +21,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     LayerMask layerMask;
 
+    [SerializeField]
+    private float moveSpeed = 10f, rotationSpeed = 10f;
+
+    private Vector3 movePosition;
+
     private void Start()
     {
         gridManager = FindAnyObjectByType<GridManager>();
@@ -34,9 +39,14 @@ public class Player : MonoBehaviour
     {
         ChangeAnimation();
 
-        AnalizeMovablePath();
+        if (playerStatus == PlayerStatus.IDLE)
+        {
+            AnalizeMovablePath();
 
-        DoAction();
+            DoAction();
+        }
+
+        MovePlayer();
     }
 
     private void ChangeAnimation()
@@ -205,7 +215,123 @@ public class Player : MonoBehaviour
             if(Physics.Raycast(ray, out raycastHit, Mathf.Infinity, layerMask))
             {
                 Tile tile = raycastHit.collider.gameObject.GetComponent<Tile>();
-                Debug.Log(tile.transform.position.x + " " + tile.transform.position.z);
+                switch (tile.tileStatus)
+                {
+                    case Tile.TileStatus.MOVABLE:
+                        {
+                            movePosition = new Vector3(tile.transform.position.x, transform.position.y, tile.transform.position.z);
+                            if(Vector3.Distance(transform.position, mousePosition) >= 2)
+                            {
+                                playerStatus = PlayerStatus.RUNNING;
+                            }
+                            else
+                            {
+                                playerStatus = PlayerStatus.WALKING;
+                            }
+
+                            break;
+                        }
+                }
+
+                ResetMovablePath();
+            }
+        }
+    }
+
+    private void MovePlayer()
+    {
+        if(playerStatus == PlayerStatus.WALKING || playerStatus == PlayerStatus.RUNNING)
+        {
+            if(transform.position != movePosition)
+            {
+                Vector3 direction = movePosition - transform.position;
+
+                if(direction.magnitude > 0.1f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                }
+
+                transform.position = Vector3.MoveTowards(transform.position, movePosition, moveSpeed * Time.deltaTime);
+            }
+            else
+            {
+                playerStatus = PlayerStatus.IDLE;
+            }
+            
+        }
+    }
+
+    public void ResetMovablePath()
+    {
+        Tile playerTile = GetPlayerPosition();
+
+        int xPos = (int)playerTile.positionX - 1;
+        int yPos = (int)playerTile.positionY - 1;
+
+        if (playerTile.tileType == Tile.TileType.BLACK)
+        {
+            //Top Path
+            for (int i = xPos; i < 21; i++)
+            {
+                Tile tile = gridManager.grid[i][yPos];
+                if (tile.tileType == Tile.TileType.BLACK)
+                {
+                    tile.ResetColor();
+                    tile.tileStatus = Tile.TileStatus.IDLE;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            //Bottom Path
+
+            for (int i = xPos; i > -1; i--)
+            {
+                Tile tile = gridManager.grid[i][yPos];
+                if (tile.tileType == Tile.TileType.BLACK)
+                {
+                    tile.ResetColor();
+                    tile.tileStatus = Tile.TileStatus.IDLE;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            //Left Path
+
+            for (int i = yPos; i > -1; i--)
+            {
+                Tile tile = gridManager.grid[xPos][i];
+                if (tile.tileType == Tile.TileType.BLACK)
+                {
+                    tile.ResetColor();
+                    tile.tileStatus = Tile.TileStatus.IDLE;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            //Right Path
+            for (int i = yPos; i < 21; i++)
+            {
+                Tile tile = gridManager.grid[xPos][i];
+                if (tile.tileType == Tile.TileType.BLACK)
+                {
+                    tile.ResetColor();
+                    tile.tileStatus = Tile.TileStatus.IDLE;
+                }
+                else
+                {
+                    break;
+                }
             }
         }
     }

@@ -46759,6 +46759,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6531048136059793841, guid: 48e8d1339d8e4104daed8d4f68fad382,
         type: 3}
+      propertyPath: moveSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6531048136059793841, guid: 48e8d1339d8e4104daed8d4f68fad382,
+        type: 3}
       propertyPath: layerMask.m_Bits
       value: 64
       objectReference: {fileID: 0}
