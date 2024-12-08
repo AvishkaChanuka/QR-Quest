@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -15,9 +16,12 @@ public class Player : MonoBehaviour
     public PlayerStatus playerStatus;
 
     Animator playerAnimator;
+    GridManager gridManager;
 
     private void Start()
     {
+        gridManager = FindAnyObjectByType<GridManager>();
+
         playerStatus = PlayerStatus.IDLE;
         playerAnimator = GetComponent<Animator>();
         ChangeAnimation();
@@ -25,13 +29,9 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            playerStatus = PlayerStatus.ATTACKING;
-            Debug.Log("Attack");
-        }
-
         ChangeAnimation();
+
+        AnalizeMovablePath();
     }
 
     private void ChangeAnimation()
@@ -97,5 +97,90 @@ public class Player : MonoBehaviour
             playerStatus = PlayerStatus.IDLE;
         }
 
+    }
+
+    public Tile GetPlayerPosition()
+    {
+        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), -transform.up);
+        RaycastHit hitData;
+        Debug.DrawRay(ray.origin, ray.direction * 2);
+
+        if(Physics.Raycast(ray, out hitData, 2))
+        {
+            Tile tile = hitData.collider.gameObject.GetComponent<Tile>();
+            tile.ChangeColor(0);
+            return tile;
+        }
+
+        return null;
+    }
+
+    public void AnalizeMovablePath()
+    {
+        Tile playerTile = GetPlayerPosition();
+
+        int xPos = (int)playerTile.positionX - 1;
+        int yPos = (int)playerTile.positionY - 1;
+
+        if (playerTile.tileType == Tile.TileType.BLACK)
+        {
+            //Top Path
+            for(int i = xPos + 1; i < 21; i++)
+            {
+                Tile tile = gridManager.grid[i][yPos];
+                if (tile.tileType == Tile.TileType.BLACK)
+                {
+                    tile.ChangeColor(1);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            //Bottom Path
+
+            for (int i = xPos - 1; i > -1; i--)
+            {
+                Tile tile = gridManager.grid[i][yPos];
+                if (tile.tileType == Tile.TileType.BLACK)
+                {
+                    tile.ChangeColor(1);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            //Left Path
+
+            for (int i = yPos - 1; i > -1; i--)
+            {
+                Tile tile = gridManager.grid[xPos][i];
+                if (tile.tileType == Tile.TileType.BLACK)
+                {
+                    tile.ChangeColor(1);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            //Right Path
+            for (int i = yPos + 1; i < 21; i++)
+            {
+                Tile tile = gridManager.grid[xPos][i];
+                if (tile.tileType == Tile.TileType.BLACK)
+                {
+                    tile.ChangeColor(1);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
     }
 }

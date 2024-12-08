@@ -18,9 +18,17 @@ public class Tile : MonoBehaviour
     private void Awake()
     {
         meshRenderer = GetComponent<MeshRenderer>();
-        
+        ResetColor();
+    }
 
-        if(tileType == TileType.BLACK)
+    public void ChangeColor(int colorNo)
+    {
+        meshRenderer.materials[0].color = colorManager.middleColors[colorNo];
+    }
+
+    public void ResetColor()
+    {
+        if (tileType == TileType.BLACK)
         {
             meshRenderer.materials[0].color = colorManager.darkBaseColor;
             meshRenderer.materials[1].color = colorManager.darkBaseColor;
