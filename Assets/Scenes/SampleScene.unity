@@ -10240,7 +10240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f5c2d297377b8c49a93ec046ccdbde2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countTurns: 4
+  countTurns: 0
   wavePeriod: 8
 --- !u!4 &550956951
 Transform:
