@@ -10,6 +10,17 @@ public class GridManager : MonoBehaviour
 
     public Tile[][] grid;
 
+    private GameManager gameManager;
+
+    [SerializeField]
+    private float minY = 0, maxY = 1;
+
+    private void Start()
+    {
+        gameManager = FindAnyObjectByType<GameManager>();
+        ChangeWave();
+    }
+
     private void setUpGrid()
     {
         grid = new Tile[][]
@@ -24,6 +35,38 @@ public class GridManager : MonoBehaviour
         setUpGrid();
     }
 
+    private void Update()
+    {
+        
+    }
 
+    public void ChangeWave()
+    {
+        int currentWaveTurn = gameManager.GetCurrentWaveTurns();
+        if(currentWaveTurn == gameManager.wavePeriod / 2)
+        {
+            MoveTile(minY);
+        }
+        else if(currentWaveTurn == 0)
+        {
+            MoveTile(maxY);
+        }
+    }
+
+    private void MoveTile(float yPos)
+    {
+        for (int i = 0; i < grid.Length; i++)
+        {
+            for (int j = 0; j < grid[i].Length; j++)
+            {
+                if (grid[i][j].tileType == Tile.TileType.BLACK)
+                {
+                    Vector3 movePosition = grid[i][j].transform.position;
+                    movePosition.y = yPos;
+                    grid[i][j].transform.position = movePosition;
+                }
+            }
+        }
+    }
 
 }
