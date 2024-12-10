@@ -10242,11 +10242,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveStatus: 0
   countTurns: 0
-  wavePeriod: 8
+  wavePeriod: 4
   players:
   - {fileID: 1182875567}
   - {fileID: 5171253826346089944}
-  currentPlayer: 1
+  currentPlayer: 0
+  isPlayerTurn: 1
 --- !u!4 &550956951
 Transform:
   m_ObjectHideFlags: 0

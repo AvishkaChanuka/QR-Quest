@@ -14,7 +14,11 @@ public class GameManager : MonoBehaviour
 
     public int currentPlayer = 0;
 
+    public bool isPlayerTurn = true;
+
     private int _currentWaveTurns;
+
+    private GridManager _gridManager;
 
     private void Awake()
     {
@@ -24,6 +28,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         waveStatus = GridWave.BLACKUP;
+        _gridManager = FindAnyObjectByType<GridManager>();
     }
 
     public int GetCurrentWaveTurns()
@@ -37,6 +42,20 @@ public class GameManager : MonoBehaviour
         {
             players[i].playerID = i;
         }
+    }
+
+    public void EndTurn()
+    {
+        ChangePlayer((currentPlayer + 1) % players.Length);
+        isPlayerTurn = false;
+        Invoke("StartNextPlayerTurn", 1f);
+    }
+
+    private void StartNextPlayerTurn()
+    {
+        countTurns++;
+        _gridManager.ChangeWave();
+        isPlayerTurn = true;
     }
 
     public void ChangePlayer(int playerNo)
