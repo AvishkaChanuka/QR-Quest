@@ -45,10 +45,12 @@ public class GridManager : MonoBehaviour
         int currentWaveTurn = gameManager.GetCurrentWaveTurns();
         if(currentWaveTurn == gameManager.wavePeriod / 2)
         {
+            gameManager.waveStatus = GameManager.GridWave.BLACKDOWN;
             MoveTile(minY);
         }
         else if(currentWaveTurn == 0)
         {
+            gameManager.waveStatus= GameManager.GridWave.BLACKUP;
             MoveTile(maxY);
         }
     }
