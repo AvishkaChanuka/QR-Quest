@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     public enum PlayerStatus { IDLE, WALKING, RUNNING, ATTACKING, PICKUP, HITTING, DEAD}
     public PlayerStatus playerStatus;
 
+    public int playerID;
+
     Animator playerAnimator;
     GridManager gridManager;
 
@@ -42,14 +44,22 @@ public class Player : MonoBehaviour
     {
         ChangeAnimation();
 
-        if (playerStatus == PlayerStatus.IDLE)
+        if(playerID == gameManager.currentPlayer)
         {
-            AnalizeMovablePath();
+            if (playerStatus == PlayerStatus.IDLE)
+            {
+                AnalizeMovablePath();
 
-            DoAction();
+                DoAction();
+            }
+
+            MovePlayer();
         }
-
-        MovePlayer();
+        else
+        {
+            ResetMovablePath();
+        }
+        
     }
 
     private void ChangeAnimation()

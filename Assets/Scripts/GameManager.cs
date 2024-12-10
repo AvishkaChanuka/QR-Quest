@@ -9,7 +9,17 @@ public class GameManager : MonoBehaviour
 
     public int countTurns = 0;
     public int wavePeriod = 8;
+
+    public Player[] players;
+
+    public int currentPlayer = 0;
+
     private int _currentWaveTurns;
+
+    private void Awake()
+    {
+        InitiatePalyers();
+    }
 
     private void Start()
     {
@@ -19,5 +29,18 @@ public class GameManager : MonoBehaviour
     public int GetCurrentWaveTurns()
     {
         return countTurns % wavePeriod;
+    }
+
+    private void InitiatePalyers()
+    {
+        for(int i = 0; i < players.Length; i++)
+        {
+            players[i].playerID = i;
+        }
+    }
+
+    public void ChangePlayer(int playerNo)
+    {
+        currentPlayer = playerNo;
     }
 }
