@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     public enum PlayerStatus { IDLE, WALKING, RUNNING, ATTACKING, PICKUP, HITTING, DEAD}
     public PlayerStatus playerStatus;
 
+    public int playerID;
+
     Animator playerAnimator;
     GridManager gridManager;
 
@@ -26,9 +28,12 @@ public class Player : MonoBehaviour
 
     private Vector3 movePosition;
 
+    private GameManager gameManager;
+
     private void Start()
     {
         gridManager = FindAnyObjectByType<GridManager>();
+        gameManager = FindAnyObjectByType<GameManager>();
 
         playerStatus = PlayerStatus.IDLE;
         playerAnimator = GetComponent<Animator>();
@@ -39,14 +44,22 @@ public class Player : MonoBehaviour
     {
         ChangeAnimation();
 
-        if (playerStatus == PlayerStatus.IDLE)
+        if(playerID == gameManager.currentPlayer && gameManager.isPlayerTurn)
         {
-            AnalizeMovablePath();
+            if (playerStatus == PlayerStatus.IDLE)
+            {
+                AnalizeMovablePath();
 
-            DoAction();
+                DoAction();
+            }
+
+            MovePlayer();
         }
-
-        MovePlayer();
+        else
+        {
+            //ResetMovablePath();
+        }
+        
     }
 
     private void ChangeAnimation()
@@ -134,24 +147,156 @@ public class Player : MonoBehaviour
     {
         Tile playerTile = GetPlayerPosition();
 
-        int xPos = (int)playerTile.positionX - 1;
-        int yPos = (int)playerTile.positionY - 1;
+        /*int xPos = (int)playerTile.positionX - 1;
+        int yPos = (int)playerTile.positionY - 1;*/
 
-        if (playerTile.tileType == Tile.TileType.BLACK)
+        int xPos = 0, yPos = 0;
+        if (playerTile != null)
+        {
+            xPos = (int)playerTile.positionX - 1;
+            yPos = (int)playerTile.positionY - 1;
+        }
+
+        if (gameManager.waveStatus == GameManager.GridWave.BLACKUP)
+        {
+            if(playerTile.tileType == Tile.TileType.BLACK)
+            {
+                for (int i = xPos + 1; i < 21; i++)
+                {
+                    Tile tile = gridManager.grid[i][yPos];
+                    if (tile.tileType == Tile.TileType.BLACK)
+                    {
+                        tile.ChangeColor(1);
+                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                //Bottom Path
+
+                for (int i = xPos - 1; i > -1; i--)
+                {
+                    Tile tile = gridManager.grid[i][yPos];
+                    if (tile.tileType == Tile.TileType.BLACK)
+                    {
+                        tile.ChangeColor(1);
+                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                //Left Path
+
+                for (int i = yPos - 1; i > -1; i--)
+                {
+                    Tile tile = gridManager.grid[xPos][i];
+                    if (tile.tileType == Tile.TileType.BLACK)
+                    {
+                        tile.ChangeColor(1);
+                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                //Right Path
+                for (int i = yPos + 1; i < 21; i++)
+                {
+                    Tile tile = gridManager.grid[xPos][i];
+                    if (tile.tileType == Tile.TileType.BLACK)
+                    {
+                        tile.ChangeColor(1);
+                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            
+            else if (playerTile.tileType == Tile.TileType.WHITE)
+            {
+                for (int i = xPos + 1; i < 21; i++)
+                {
+                    Tile tile = gridManager.grid[i][yPos];
+                    if (tile.tileType == Tile.TileType.WHITE)
+                    {
+                        tile.ChangeColor(1);
+                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                //Bottom Path
+
+                for (int i = xPos - 1; i > -1; i--)
+                {
+                    Tile tile = gridManager.grid[i][yPos];
+                    if (tile.tileType == Tile.TileType.WHITE)
+                    {
+                        tile.ChangeColor(1);
+                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                //Left Path
+
+                for (int i = yPos - 1; i > -1; i--)
+                {
+                    Tile tile = gridManager.grid[xPos][i];
+                    if (tile.tileType == Tile.TileType.WHITE)
+                    {
+                        tile.ChangeColor(1);
+                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                //Right Path
+                for (int i = yPos + 1; i < 21; i++)
+                {
+                    Tile tile = gridManager.grid[xPos][i];
+                    if (tile.tileType == Tile.TileType.WHITE)
+                    {
+                        tile.ChangeColor(1);
+                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            
+        }
+
+        else if (gameManager.waveStatus == GameManager.GridWave.BLACKDOWN)
         {
             //Top Path
-            for(int i = xPos + 1; i < 21; i++)
+            for (int i = xPos + 1; i < 21; i++)
             {
                 Tile tile = gridManager.grid[i][yPos];
-                if (tile.tileType == Tile.TileType.BLACK)
-                {
-                    tile.ChangeColor(1);
-                    tile.tileStatus = Tile.TileStatus.MOVABLE;
-                }
-                else
-                {
-                    break;
-                }
+                tile.ChangeColor(1);
+                tile.tileStatus = Tile.TileStatus.MOVABLE;
             }
 
             //Bottom Path
@@ -159,15 +304,8 @@ public class Player : MonoBehaviour
             for (int i = xPos - 1; i > -1; i--)
             {
                 Tile tile = gridManager.grid[i][yPos];
-                if (tile.tileType == Tile.TileType.BLACK)
-                {
-                    tile.ChangeColor(1);
-                    tile.tileStatus = Tile.TileStatus.MOVABLE;
-                }
-                else
-                {
-                    break;
-                }
+                tile.ChangeColor(1);
+                tile.tileStatus = Tile.TileStatus.MOVABLE;
             }
 
             //Left Path
@@ -175,30 +313,16 @@ public class Player : MonoBehaviour
             for (int i = yPos - 1; i > -1; i--)
             {
                 Tile tile = gridManager.grid[xPos][i];
-                if (tile.tileType == Tile.TileType.BLACK)
-                {
-                    tile.ChangeColor(1);
-                    tile.tileStatus = Tile.TileStatus.MOVABLE;
-                }
-                else
-                {
-                    break;
-                }
+                tile.ChangeColor(1);
+                tile.tileStatus = Tile.TileStatus.MOVABLE;
             }
 
             //Right Path
             for (int i = yPos + 1; i < 21; i++)
             {
                 Tile tile = gridManager.grid[xPos][i];
-                if (tile.tileType == Tile.TileType.BLACK)
-                {
-                    tile.ChangeColor(1);
-                    tile.tileStatus = Tile.TileStatus.MOVABLE;
-                }
-                else
-                {
-                    break;
-                }
+                tile.ChangeColor(1);
+                tile.tileStatus = Tile.TileStatus.MOVABLE;
             }
         }
     }
@@ -235,6 +359,7 @@ public class Player : MonoBehaviour
 
                 ResetMovablePath();
             }
+
         }
     }
 
@@ -258,6 +383,7 @@ public class Player : MonoBehaviour
             else
             {
                 playerStatus = PlayerStatus.IDLE;
+                gameManager.EndTurn();
             }
             
         }
@@ -265,26 +391,22 @@ public class Player : MonoBehaviour
 
     public void ResetMovablePath()
     {
-        Tile playerTile = GetPlayerPosition();
+        /*Tile playerTile = GetPlayerPosition();
+        int xPos = 0, yPos = 0;
+        
+        xPos = (int)playerTile.positionX - 1;
+        yPos = (int)playerTile.positionY - 1;
+       
+        
 
-        int xPos = (int)playerTile.positionX - 1;
-        int yPos = (int)playerTile.positionY - 1;
-
-        if (playerTile.tileType == Tile.TileType.BLACK)
+        if (gameManager.waveStatus == GameManager.GridWave.BLACKUP)
         {
             //Top Path
             for (int i = xPos; i < 21; i++)
             {
                 Tile tile = gridManager.grid[i][yPos];
-                if (tile.tileType == Tile.TileType.BLACK)
-                {
-                    tile.ResetColor();
-                    tile.tileStatus = Tile.TileStatus.IDLE;
-                }
-                else
-                {
-                    break;
-                }
+                tile.ResetColor();
+                tile.tileStatus = Tile.TileStatus.IDLE;
             }
 
             //Bottom Path
@@ -292,15 +414,8 @@ public class Player : MonoBehaviour
             for (int i = xPos; i > -1; i--)
             {
                 Tile tile = gridManager.grid[i][yPos];
-                if (tile.tileType == Tile.TileType.BLACK)
-                {
-                    tile.ResetColor();
-                    tile.tileStatus = Tile.TileStatus.IDLE;
-                }
-                else
-                {
-                    break;
-                }
+                tile.ResetColor();
+                tile.tileStatus = Tile.TileStatus.IDLE;
             }
 
             //Left Path
@@ -308,30 +423,63 @@ public class Player : MonoBehaviour
             for (int i = yPos; i > -1; i--)
             {
                 Tile tile = gridManager.grid[xPos][i];
-                if (tile.tileType == Tile.TileType.BLACK)
-                {
-                    tile.ResetColor();
-                    tile.tileStatus = Tile.TileStatus.IDLE;
-                }
-                else
-                {
-                    break;
-                }
+                tile.ResetColor();
+                tile.tileStatus = Tile.TileStatus.IDLE;
             }
 
             //Right Path
             for (int i = yPos; i < 21; i++)
             {
                 Tile tile = gridManager.grid[xPos][i];
-                if (tile.tileType == Tile.TileType.BLACK)
-                {
-                    tile.ResetColor();
-                    tile.tileStatus = Tile.TileStatus.IDLE;
-                }
-                else
-                {
-                    break;
-                }
+                tile.ResetColor();
+                tile.tileStatus = Tile.TileStatus.IDLE;
+            }
+        }
+
+        else if (gameManager.waveStatus == GameManager.GridWave.BLACKDOWN)
+        {
+            //Top Path
+            for (int i = xPos + 1; i < 21; i++)
+            {
+                Tile tile = gridManager.grid[i][yPos];
+                tile.ResetColor();
+                tile.tileStatus = Tile.TileStatus.IDLE;
+            }
+
+            //Bottom Path
+
+            for (int i = xPos - 1; i > -1; i--)
+            {
+                Tile tile = gridManager.grid[i][yPos];
+                tile.ResetColor();
+                tile.tileStatus = Tile.TileStatus.IDLE;
+            }
+
+            //Left Path
+
+            for (int i = yPos - 1; i > -1; i--)
+            {
+                Tile tile = gridManager.grid[xPos][i];
+                tile.ResetColor();
+                tile.tileStatus = Tile.TileStatus.IDLE;
+            }
+
+            //Right Path
+            for (int i = yPos + 1; i < 21; i++)
+            {
+                Tile tile = gridManager.grid[xPos][i];
+                tile.ResetColor();
+                tile.tileStatus = Tile.TileStatus.IDLE;
+            }
+        }*/
+
+        for(int i = 0; i < 21; i++)
+        {
+            for (int j = 0; j < 21; j++)
+            {
+                Tile tile = gridManager.grid[i][j];
+                tile.ResetColor();
+                tile.tileStatus = Tile.TileStatus.IDLE;
             }
         }
     }

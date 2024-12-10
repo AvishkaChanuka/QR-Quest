@@ -45,11 +45,15 @@ public class GridManager : MonoBehaviour
         int currentWaveTurn = gameManager.GetCurrentWaveTurns();
         if(currentWaveTurn == gameManager.wavePeriod / 2)
         {
+            gameManager.waveStatus = GameManager.GridWave.BLACKDOWN;
             MoveTile(minY);
+            MovePlayer(minY+1);
         }
         else if(currentWaveTurn == 0)
         {
+            gameManager.waveStatus= GameManager.GridWave.BLACKUP;
             MoveTile(maxY);
+            MovePlayer(maxY+1);
         }
     }
 
@@ -65,6 +69,19 @@ public class GridManager : MonoBehaviour
                     movePosition.y = yPos;
                     grid[i][j].transform.position = movePosition;
                 }
+            }
+        }
+    }
+
+    private void MovePlayer(float yPos)
+    {
+        for(int i = 0; i< gameManager.players.Length; i++)
+        {
+            if (gameManager.players[i].GetPlayerPosition().tileType == Tile.TileType.BLACK)
+            {
+                Vector3 movePosition = gameManager.players[i].transform.position;
+                movePosition.y = yPos;
+                gameManager.players[i].transform.position = movePosition;
             }
         }
     }
