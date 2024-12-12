@@ -48,6 +48,10 @@ public class Player : MonoBehaviour
 
     private GameManager gameManager;
     private ChestChecker chestChecker;
+    private AudioSource audioSource;
+
+    [SerializeField]
+    AudioClip[] audioClips;
 
     private bool doesHaveToCollect = false, doesHaveToAttack = false, doesHaveToUnlock = false;
 
@@ -59,6 +63,7 @@ public class Player : MonoBehaviour
         gridManager = FindAnyObjectByType<GridManager>();
         gameManager = FindAnyObjectByType<GameManager>();
         chestChecker = FindAnyObjectByType<ChestChecker>();
+        audioSource = GetComponent<AudioSource>();
 
         playerStatus = PlayerStatus.IDLE;
         playerAnimator = GetComponent<Animator>();
@@ -657,6 +662,7 @@ public class Player : MonoBehaviour
                     enemy.GetAttack(2);
                     Debug.Log("Attack");
                     doesHaveToAttack = false;
+                    PlaySound(4);
                 }
                 else if (doesHaveToUnlock)
                 {
@@ -692,6 +698,7 @@ public class Player : MonoBehaviour
             playerStatus = PlayerStatus.ATTACKING;
             chest.GetAttack(attackStrength);
             EnergyizePlayer(-2);
+            PlaySound(4);
 
             if (chest.IsChestClaimed())
             {
@@ -699,6 +706,7 @@ public class Player : MonoBehaviour
                 Message.ShowMessage(gameObject.name + " has claimed a chest!!!");
                 gameManager.noOfChests--;
                 chest.gameObject.SetActive(false);
+                PlaySound(0);
             }
         }
         else
@@ -734,6 +742,8 @@ public class Player : MonoBehaviour
                         break;
                     }
             }
+
+            PlaySound(1);
         }
     }
 
@@ -794,5 +804,10 @@ public class Player : MonoBehaviour
         playerCoinAmountUI.text = coinLevel.ToString();
         playerHealthUI.value = healthLevl;
         playerEnergyUI.value = fightLevel;
+    }
+
+    public void PlaySound(int i)
+    {
+        audioSource.PlayOneShot(audioClips[i]);
     }
 }

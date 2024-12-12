@@ -53249,11 +53249,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mage
       objectReference: {fileID: 0}
-    - target: {fileID: 2207574511666887653, guid: e9e67289b372e4b4496be771cb63559e,
-        type: 3}
-      propertyPath: m_TagString
-      value: Player
-      objectReference: {fileID: 0}
     - target: {fileID: 2638549100870538009, guid: e9e67289b372e4b4496be771cb63559e,
         type: 3}
       propertyPath: Message
@@ -53276,13 +53271,18 @@ PrefabInstance:
       objectReference: {fileID: 1167389076}
     - target: {fileID: 2638549100870538009, guid: e9e67289b372e4b4496be771cb63559e,
         type: 3}
-      propertyPath: blackDownMoveLength
-      value: 6
+      propertyPath: audioClips.Array.size
+      value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 2638549100870538009, guid: e9e67289b372e4b4496be771cb63559e,
+        type: 3}
+      propertyPath: audioClips.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 18873b86ad6555040872387454fedf25, type: 3}
     - target: {fileID: 8168851156338929775, guid: e9e67289b372e4b4496be771cb63559e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 8168851156338929775, guid: e9e67289b372e4b4496be771cb63559e,
         type: 3}
@@ -53292,7 +53292,7 @@ PrefabInstance:
     - target: {fileID: 8168851156338929775, guid: e9e67289b372e4b4496be771cb63559e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -18
       objectReference: {fileID: 0}
     - target: {fileID: 8168851156338929775, guid: e9e67289b372e4b4496be771cb63559e,
         type: 3}
@@ -53448,15 +53448,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Barbarian
       objectReference: {fileID: 0}
-    - target: {fileID: 3597421591438467781, guid: 48e8d1339d8e4104daed8d4f68fad382,
-        type: 3}
-      propertyPath: m_TagString
-      value: Player
-      objectReference: {fileID: 0}
     - target: {fileID: 6035849832452620727, guid: 48e8d1339d8e4104daed8d4f68fad382,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6035849832452620727, guid: 48e8d1339d8e4104daed8d4f68fad382,
         type: 3}
@@ -53466,7 +53461,7 @@ PrefabInstance:
     - target: {fileID: 6035849832452620727, guid: 48e8d1339d8e4104daed8d4f68fad382,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -16
+      value: -18
       objectReference: {fileID: 0}
     - target: {fileID: 6035849832452620727, guid: 48e8d1339d8e4104daed8d4f68fad382,
         type: 3}
@@ -53525,9 +53520,14 @@ PrefabInstance:
       objectReference: {fileID: 2000967875}
     - target: {fileID: 6531048136059793841, guid: 48e8d1339d8e4104daed8d4f68fad382,
         type: 3}
-      propertyPath: blackDownMoveLength
-      value: 6
+      propertyPath: audioClips.Array.size
+      value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 6531048136059793841, guid: 48e8d1339d8e4104daed8d4f68fad382,
+        type: 3}
+      propertyPath: audioClips.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 18873b86ad6555040872387454fedf25, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

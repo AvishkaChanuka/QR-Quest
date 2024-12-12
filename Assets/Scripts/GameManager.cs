@@ -101,6 +101,7 @@ public class GameManager : MonoBehaviour
             winnertxt.text = " Winner is " + winner;
 
             GameWinUI.SetActive(true );
+            players[0].PlaySound(2);
         }
     }
 
@@ -111,6 +112,8 @@ public class GameManager : MonoBehaviour
             if(player.isAlive == false)
             {
                 GameOverUI.SetActive(true) ;
+                player.PlaySound(3);
+                break;
             }
         }
     }
