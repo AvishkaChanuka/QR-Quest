@@ -16,12 +16,15 @@ public class GameManager : MonoBehaviour
 
     public bool isPlayerTurn = true;
 
+    public GameObject nextButton;
+
     private int _currentWaveTurns;
 
     private GridManager _gridManager;
 
     private void Awake()
     {
+        nextButton.SetActive(false);
         InitiatePalyers();
     }
 
@@ -48,14 +51,15 @@ public class GameManager : MonoBehaviour
     {
         ChangePlayer((currentPlayer + 1) % players.Length);
         isPlayerTurn = false;
-        Invoke("StartNextPlayerTurn", 1f);
+        nextButton.SetActive(true);
     }
 
-    private void StartNextPlayerTurn()
+    public void StartNextPlayerTurn()
     {
         countTurns++;
         _gridManager.ChangeWave();
         isPlayerTurn = true;
+        nextButton.SetActive(false);
     }
 
     public void ChangePlayer(int playerNo)

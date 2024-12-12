@@ -44,7 +44,9 @@ public class Player : MonoBehaviour
 
     private GameManager gameManager;
 
-    private bool doesHaveToCollect = false;
+    private bool doesHaveToCollect = false, doesHaveToAttack = false;
+
+    private Player enemy;
 
     private void Start()
     {
@@ -181,15 +183,21 @@ public class Player : MonoBehaviour
         {
             if(playerTile.tileType == Tile.TileType.BLACK)
             {
+                
                 for (int i = xPos + 1; i < 21; i++)
                 {
                     Tile tile = gridManager.grid[i][yPos];
                     if (tile.tileType == Tile.TileType.BLACK)
                     {
-                        if(tile.ISCollectableTile())
+                        if (tile.ISCollectableTile())
                         {
                             tile.ChangeColor(2);
                             tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                            break;
+                        }
+                        else if(tile.IsPlayerAttackableTile() != null)
+                        {
+                            break;
                         }
                         else
                         {
@@ -214,7 +222,13 @@ public class Player : MonoBehaviour
                         {
                             tile.ChangeColor(2);
                             tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                            break;
                         }
+                        else if (tile.IsPlayerAttackableTile() != null)
+                        {
+                            break;
+                        }
+
                         else
                         {
                             tile.ChangeColor(1);
@@ -238,7 +252,13 @@ public class Player : MonoBehaviour
                         {
                             tile.ChangeColor(2);
                             tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                            break;
                         }
+                        else if (tile.IsPlayerAttackableTile() != null)
+                        {
+                            break;
+                        }
+
                         else
                         {
                             tile.ChangeColor(1);
@@ -261,7 +281,13 @@ public class Player : MonoBehaviour
                         {
                             tile.ChangeColor(2);
                             tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                            break;
                         }
+                        else if (tile.IsPlayerAttackableTile() != null)
+                        {
+                            break;
+                        }
+
                         else
                         {
                             tile.ChangeColor(1);
@@ -285,6 +311,10 @@ public class Player : MonoBehaviour
                         tile.ChangeColor(1);
                         tile.tileStatus = Tile.TileStatus.MOVABLE;
                     }
+                    else if (tile.IsPlayerAttackableTile() != null)
+                    {
+                        break;
+                    }
                     else
                     {
                         break;
@@ -300,6 +330,10 @@ public class Player : MonoBehaviour
                     {
                         tile.ChangeColor(1);
                         tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else if (tile.IsPlayerAttackableTile() != null)
+                    {
+                        break;
                     }
                     else
                     {
@@ -317,6 +351,10 @@ public class Player : MonoBehaviour
                         tile.ChangeColor(1);
                         tile.tileStatus = Tile.TileStatus.MOVABLE;
                     }
+                    else if (tile.IsPlayerAttackableTile() != null)
+                    {
+                        break;
+                    }
                     else
                     {
                         break;
@@ -331,6 +369,10 @@ public class Player : MonoBehaviour
                     {
                         tile.ChangeColor(1);
                         tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    }
+                    else if (tile.IsPlayerAttackableTile() != null)
+                    {
+                        break;
                     }
                     else
                     {
@@ -349,13 +391,27 @@ public class Player : MonoBehaviour
             for (int i = xPos + 1; i < 21; i++)
             {
                 Tile tile = gridManager.grid[i][yPos];
-                tile.ChangeColor(1);
-                tile.tileStatus = Tile.TileStatus.MOVABLE;
-                moveCount++;
+
+                if (tile.IsPlayerAttackableTile() != null)
+                {
+                    enemy = tile.IsPlayerAttackableTile();
+                    tile.ChangeColor(3);
+                    tile.tileStatus = Tile.TileStatus.ATTACK;
+                    break;
+                }
+                else
+                {
+                    tile.ChangeColor(1);
+                    tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    moveCount++;
+                }
+                
                 if(moveCount >= blackDownMoveLength)
                 {
                     break;
                 }
+
+                
             }
 
             moveCount = 0;
@@ -364,8 +420,20 @@ public class Player : MonoBehaviour
             for (int i = xPos - 1; i > -1; i--)
             {
                 Tile tile = gridManager.grid[i][yPos];
-                tile.ChangeColor(1);
-                tile.tileStatus = Tile.TileStatus.MOVABLE;
+
+                if (tile.IsPlayerAttackableTile() != null)
+                {
+                    enemy = tile.IsPlayerAttackableTile();
+                    tile.ChangeColor(3);
+                    tile.tileStatus = Tile.TileStatus.ATTACK;
+                    break;
+                }
+                else
+                {
+                    tile.ChangeColor(1);
+                    tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    moveCount++;
+                }
 
                 moveCount++;
                 if (moveCount >= blackDownMoveLength)
@@ -379,14 +447,26 @@ public class Player : MonoBehaviour
             for (int i = yPos - 1; i > -1; i--)
             {
                 Tile tile = gridManager.grid[xPos][i];
-                tile.ChangeColor(1);
-                tile.tileStatus = Tile.TileStatus.MOVABLE;
 
-                moveCount++;
+                if (tile.IsPlayerAttackableTile() != null)
+                {
+                    enemy = tile.IsPlayerAttackableTile();
+                    tile.ChangeColor(3);
+                    tile.tileStatus = Tile.TileStatus.ATTACK;
+                    break;
+                }
+                else
+                {
+                    tile.ChangeColor(1);
+                    tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    moveCount++;
+                }
+
                 if (moveCount >= blackDownMoveLength)
                 {
                     break;
                 }
+                
             }
 
             //Right Path
@@ -394,14 +474,26 @@ public class Player : MonoBehaviour
             for (int i = yPos + 1; i < 21; i++)
             {
                 Tile tile = gridManager.grid[xPos][i];
-                tile.ChangeColor(1);
-                tile.tileStatus = Tile.TileStatus.MOVABLE;
 
-                moveCount++;
+                if (tile.IsPlayerAttackableTile() != null)
+                {
+                    enemy = tile.IsPlayerAttackableTile();
+                    tile.ChangeColor(3);
+                    tile.tileStatus = Tile.TileStatus.ATTACK;
+                    break;
+                }
+                else
+                {
+                    tile.ChangeColor(1);
+                    tile.tileStatus = Tile.TileStatus.MOVABLE;
+                    moveCount++;
+                }
+
                 if (moveCount >= blackDownMoveLength)
                 {
                     break;
                 }
+                
             }
         }
     }
@@ -433,6 +525,19 @@ public class Player : MonoBehaviour
                             doesHaveToCollect = true;
                             break;
                         }
+                    case Tile.TileStatus.ATTACK:
+                        {
+                            movePosition = new Vector3(tile.transform.position.x, transform.position.y, tile.transform.position.z);
+                            Vector3 dirVector = movePosition - transform.position;
+                            dirVector.Normalize();
+                            movePosition -= dirVector * 2;
+
+                            Debug.Log(dirVector * 2);
+
+                            playerStatus = PlayerStatus.RUNNING;
+                            doesHaveToAttack = true;
+                            break;
+                        }
                 }
 
                 ResetMovablePath();
@@ -445,17 +550,18 @@ public class Player : MonoBehaviour
     {
         if(playerStatus == PlayerStatus.WALKING || playerStatus == PlayerStatus.RUNNING)
         {
-            if(transform.position != movePosition)
+            Vector3 direction = movePosition - transform.position;
+
+            if (direction.magnitude > 0.1f)
             {
-                Vector3 direction = movePosition - transform.position;
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
 
-                if(direction.magnitude > 0.1f)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
+            
 
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-                }
-
+            if (transform.position != movePosition)
+            {
                 transform.position = Vector3.MoveTowards(transform.position, movePosition, moveSpeed * Time.deltaTime);
             }
             else
@@ -467,6 +573,13 @@ public class Player : MonoBehaviour
                     playerStatus = PlayerStatus.PICKUP;
                     Debug.Log("Collected");
                     doesHaveToCollect = false;
+                }
+                else if (doesHaveToAttack)
+                {
+                    playerStatus = PlayerStatus.ATTACKING;
+                    enemy.GetAttack(2);
+                    Debug.Log("Attack");
+                    doesHaveToAttack = false;
                 }
                 
                 gameManager.EndTurn();
@@ -485,16 +598,19 @@ public class Player : MonoBehaviour
                 case CollectableObject.ItemType.HEAL:
                     {
                         HealPlayer(item.ItemValue);
+                        item.Destroy();
                         break;
                     }
                 case CollectableObject.ItemType.ENERGY:
                     {
                         EnergyizePlayer(item.ItemValue);
+                        item.Destroy();
                         break;
                     }
                 case CollectableObject.ItemType.COIN:
                     {
                         EarnCoin(item.ItemValue);
+                        item.Destroy();
                         break;
                     }
             }

@@ -61,4 +61,22 @@ public class Tile : MonoBehaviour
 
         return false;
     }
+
+    public Player IsPlayerAttackableTile()
+    {
+        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y, transform.position.z), transform.forward);
+        RaycastHit hitData;
+        Debug.DrawRay(ray.origin, ray.direction * 3);
+
+        if (Physics.Raycast(ray, out hitData, 3))
+        {
+            Player obj;
+            if (obj = hitData.collider.gameObject.GetComponent<Player>())
+            {
+                return obj;
+            }
+        }
+
+        return null;
+    }
 }
