@@ -11,6 +11,7 @@ public class GridManager : MonoBehaviour
     public Tile[][] grid;
 
     private GameManager gameManager;
+    private CollectableManager collectableManager;
 
     [SerializeField]
     private float minY = 0, maxY = 1;
@@ -18,6 +19,7 @@ public class GridManager : MonoBehaviour
     private void Start()
     {
         gameManager = FindAnyObjectByType<GameManager>();
+        collectableManager = FindAnyObjectByType<CollectableManager>();
         ChangeWave();
     }
 
@@ -54,6 +56,8 @@ public class GridManager : MonoBehaviour
             gameManager.waveStatus= GameManager.GridWave.BLACKUP;
             MoveTile(maxY);
             MovePlayer(maxY+1);
+
+            SpawnColectables();
         }
     }
 
@@ -84,6 +88,31 @@ public class GridManager : MonoBehaviour
                 gameManager.players[i].transform.position = movePosition;
             }
         }
+    }
+
+    private void SpawnColectables()
+    { 
+        int count = 0;
+        while (count < 3)
+        {
+            int randX = Random.Range(0, grid.Length);
+            int randY = Random.Range(0, grid.Length);
+
+            Tile tile = grid[randX][randY];
+
+            if(tile.tileType == Tile.TileType.BLACK)
+            {
+                Vector3 spawnPos = new Vector3(tile.transform.position.x, maxY + 1, tile.transform.position.z);
+                GameObject spawnObject = collectableManager.collectableObjects[count];
+                Instantiate(spawnObject, spawnPos, Quaternion.identity);
+                count++;
+            }
+            else
+            {
+                continue;
+            }
+        }
+        
     }
 
 }

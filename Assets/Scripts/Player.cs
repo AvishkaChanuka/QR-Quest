@@ -29,6 +29,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     int blackDownMoveLength = 3;
 
+    [SerializeField]
+    private int healthLevl = 10, fightLevel = 10, coinLevel = 0;
+
     private Vector3 movePosition;
 
     private GameManager gameManager;
@@ -511,5 +514,25 @@ public class Player : MonoBehaviour
                 tile.tileStatus = Tile.TileStatus.IDLE;
             }
         }
+    }
+
+    public void HealPlayer(int value)
+    {
+        healthLevl = healthLevl + value;
+    }
+
+    public void EnergyizePlayer(int value)
+    {
+        fightLevel = fightLevel + value;
+    }
+
+    public void GetAttack(int value)
+    {
+        healthLevl -= value;
+    }
+
+    public void DoAttack()
+    {
+
     }
 }
