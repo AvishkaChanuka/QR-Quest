@@ -11,6 +11,8 @@ public class Chest : MonoBehaviour
     [SerializeField]
     private int currentHealth = 6, maxHealth = 6;
 
+    public int chestValue = 100;
+
     private void Start()
     {
         healthUI.maxValue = maxHealth;
@@ -19,14 +21,21 @@ public class Chest : MonoBehaviour
 
     public void GetAttack(int value)
     {
-        currentHealth += value;
+        currentHealth -= value;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        healthUI.value = value;
+        healthUI.value = currentHealth;
     }
 
-    public void ClaimChest()
+    public bool IsChestClaimed()
     {
-        Destroy(gameObject);
+        if(currentHealth <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

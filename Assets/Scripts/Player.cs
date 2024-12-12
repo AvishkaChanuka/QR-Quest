@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     public PlayerStatus playerStatus;
 
     public int playerID;
+    public bool isAlive = true;
 
     Animator playerAnimator;
     GridManager gridManager;
@@ -32,7 +33,7 @@ public class Player : MonoBehaviour
     int blackDownMoveLength = 3;
 
     [SerializeField]
-    private int healthLevl = 10, maxHealth = 10, fightLevel = 10, maxEnergyLevel = 10, coinLevel = 0;
+    public int healthLevl = 10, maxHealth = 10, fightLevel = 10, maxEnergyLevel = 10, coinLevel = 0, attackStrength = 2;
 
     [SerializeField]
     private TextMeshProUGUI playerCoinAmountUI;
@@ -40,18 +41,24 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Slider playerHealthUI, playerEnergyUI;
 
+    [SerializeField]
+    private Message Message;
+
     private Vector3 movePosition;
 
     private GameManager gameManager;
+    private ChestChecker chestChecker;
 
-    private bool doesHaveToCollect = false, doesHaveToAttack = false;
+    private bool doesHaveToCollect = false, doesHaveToAttack = false, doesHaveToUnlock = false;
 
     private Player enemy;
+    private Chest chest;
 
     private void Start()
     {
         gridManager = FindAnyObjectByType<GridManager>();
         gameManager = FindAnyObjectByType<GameManager>();
+        chestChecker = FindAnyObjectByType<ChestChecker>();
 
         playerStatus = PlayerStatus.IDLE;
         playerAnimator = GetComponent<Animator>();
@@ -77,9 +84,10 @@ public class Player : MonoBehaviour
 
             MovePlayer();
         }
-        else
+        
+        if(healthLevl <= 0)
         {
-            //ResetMovablePath();
+            isAlive = false;
         }
         
     }
@@ -195,6 +203,13 @@ public class Player : MonoBehaviour
                             tile.tileStatus = Tile.TileStatus.COLLECTABLE;
                             break;
                         }
+                        else if (tile.IsChestTile() != null)
+                        {
+                            chest = tile.IsChestTile();
+                            tile.ChangeColor(4);
+                            tile.tileStatus = Tile.TileStatus.CHEST;
+                            break;
+                        }
                         else if(tile.IsPlayerAttackableTile() != null)
                         {
                             break;
@@ -222,6 +237,13 @@ public class Player : MonoBehaviour
                         {
                             tile.ChangeColor(2);
                             tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                            break;
+                        }
+                        else if (tile.IsChestTile() != null)
+                        {
+                            chest = tile.IsChestTile();
+                            tile.ChangeColor(4);
+                            tile.tileStatus = Tile.TileStatus.CHEST;
                             break;
                         }
                         else if (tile.IsPlayerAttackableTile() != null)
@@ -254,6 +276,13 @@ public class Player : MonoBehaviour
                             tile.tileStatus = Tile.TileStatus.COLLECTABLE;
                             break;
                         }
+                        else if (tile.IsChestTile() != null)
+                        {
+                            chest = tile.IsChestTile();
+                            tile.ChangeColor(4);
+                            tile.tileStatus = Tile.TileStatus.CHEST;
+                            break;
+                        }
                         else if (tile.IsPlayerAttackableTile() != null)
                         {
                             break;
@@ -281,6 +310,13 @@ public class Player : MonoBehaviour
                         {
                             tile.ChangeColor(2);
                             tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                            break;
+                        }
+                        else if (tile.IsChestTile() != null)
+                        {
+                            chest = tile.IsChestTile();
+                            tile.ChangeColor(4);
+                            tile.tileStatus = Tile.TileStatus.CHEST;
                             break;
                         }
                         else if (tile.IsPlayerAttackableTile() != null)
@@ -399,6 +435,13 @@ public class Player : MonoBehaviour
                     tile.tileStatus = Tile.TileStatus.ATTACK;
                     break;
                 }
+                else if(tile.IsChestTile() != null)
+                {
+                    chest = tile.IsChestTile();
+                    tile.ChangeColor(4);
+                    tile.tileStatus = Tile.TileStatus.CHEST;
+                    break;
+                }
                 else
                 {
                     tile.ChangeColor(1);
@@ -428,6 +471,13 @@ public class Player : MonoBehaviour
                     tile.tileStatus = Tile.TileStatus.ATTACK;
                     break;
                 }
+                else if (tile.IsChestTile() != null)
+                {
+                    chest = tile.IsChestTile();
+                    tile.ChangeColor(4);
+                    tile.tileStatus = Tile.TileStatus.CHEST;
+                    break;
+                }
                 else
                 {
                     tile.ChangeColor(1);
@@ -455,6 +505,13 @@ public class Player : MonoBehaviour
                     tile.tileStatus = Tile.TileStatus.ATTACK;
                     break;
                 }
+                else if (tile.IsChestTile() != null)
+                {
+                    chest = tile.IsChestTile();
+                    tile.ChangeColor(4);
+                    tile.tileStatus = Tile.TileStatus.CHEST;
+                    break;
+                }
                 else
                 {
                     tile.ChangeColor(1);
@@ -480,6 +537,13 @@ public class Player : MonoBehaviour
                     enemy = tile.IsPlayerAttackableTile();
                     tile.ChangeColor(3);
                     tile.tileStatus = Tile.TileStatus.ATTACK;
+                    break;
+                }
+                else if (tile.IsChestTile() != null)
+                {
+                    chest = tile.IsChestTile();
+                    tile.ChangeColor(4);
+                    tile.tileStatus = Tile.TileStatus.CHEST;
                     break;
                 }
                 else
@@ -538,6 +602,19 @@ public class Player : MonoBehaviour
                             doesHaveToAttack = true;
                             break;
                         }
+                    case Tile.TileStatus.CHEST:
+                        {
+                            movePosition = new Vector3(tile.transform.position.x, transform.position.y, tile.transform.position.z);
+                            Vector3 dirVector = movePosition - transform.position;
+                            dirVector.Normalize();
+                            movePosition -= dirVector * 2;
+
+                            Debug.Log(dirVector * 2);
+
+                            playerStatus = PlayerStatus.RUNNING;
+                            doesHaveToUnlock = true;
+                            break;
+                        }
                 }
 
                 ResetMovablePath();
@@ -581,11 +658,54 @@ public class Player : MonoBehaviour
                     Debug.Log("Attack");
                     doesHaveToAttack = false;
                 }
+                else if (doesHaveToUnlock)
+                {
+                    if (gameManager.waveStatus == GameManager.GridWave.BLACKUP)
+                    {
+                        if (chestChecker.IsBothPlayersinArea)
+                        {
+                            AttackToChest();
+                        }
+                        else
+                        {
+                            Message.ShowMessage("To attack to the chest, Both players should be in square while black tiles are Up!");
+                        }
+                    }
+                    else
+                    {
+                        AttackToChest();
+                    }
+
+                    doesHaveToUnlock = false;
+                }
                 
                 gameManager.EndTurn();
             }
             
         }
+    }
+
+    void AttackToChest()
+    {
+        if(fightLevel >= attackStrength)
+        {
+            playerStatus = PlayerStatus.ATTACKING;
+            chest.GetAttack(attackStrength);
+            EnergyizePlayer(-2);
+
+            if (chest.IsChestClaimed())
+            {
+                EarnCoin(chest.chestValue);
+                Message.ShowMessage(gameObject.name + " has claimed a chest!!!");
+                gameManager.noOfChests--;
+                chest.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            Message.ShowMessage("Lack of Energy!, Collect Energizers and try again.");
+        }
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -619,87 +739,6 @@ public class Player : MonoBehaviour
 
     public void ResetMovablePath()
     {
-        /*Tile playerTile = GetPlayerPosition();
-        int xPos = 0, yPos = 0;
-        
-        xPos = (int)playerTile.positionX - 1;
-        yPos = (int)playerTile.positionY - 1;
-       
-        
-
-        if (gameManager.waveStatus == GameManager.GridWave.BLACKUP)
-        {
-            //Top Path
-            for (int i = xPos; i < 21; i++)
-            {
-                Tile tile = gridManager.grid[i][yPos];
-                tile.ResetColor();
-                tile.tileStatus = Tile.TileStatus.IDLE;
-            }
-
-            //Bottom Path
-
-            for (int i = xPos; i > -1; i--)
-            {
-                Tile tile = gridManager.grid[i][yPos];
-                tile.ResetColor();
-                tile.tileStatus = Tile.TileStatus.IDLE;
-            }
-
-            //Left Path
-
-            for (int i = yPos; i > -1; i--)
-            {
-                Tile tile = gridManager.grid[xPos][i];
-                tile.ResetColor();
-                tile.tileStatus = Tile.TileStatus.IDLE;
-            }
-
-            //Right Path
-            for (int i = yPos; i < 21; i++)
-            {
-                Tile tile = gridManager.grid[xPos][i];
-                tile.ResetColor();
-                tile.tileStatus = Tile.TileStatus.IDLE;
-            }
-        }
-
-        else if (gameManager.waveStatus == GameManager.GridWave.BLACKDOWN)
-        {
-            //Top Path
-            for (int i = xPos + 1; i < 21; i++)
-            {
-                Tile tile = gridManager.grid[i][yPos];
-                tile.ResetColor();
-                tile.tileStatus = Tile.TileStatus.IDLE;
-            }
-
-            //Bottom Path
-
-            for (int i = xPos - 1; i > -1; i--)
-            {
-                Tile tile = gridManager.grid[i][yPos];
-                tile.ResetColor();
-                tile.tileStatus = Tile.TileStatus.IDLE;
-            }
-
-            //Left Path
-
-            for (int i = yPos - 1; i > -1; i--)
-            {
-                Tile tile = gridManager.grid[xPos][i];
-                tile.ResetColor();
-                tile.tileStatus = Tile.TileStatus.IDLE;
-            }
-
-            //Right Path
-            for (int i = yPos + 1; i < 21; i++)
-            {
-                Tile tile = gridManager.grid[xPos][i];
-                tile.ResetColor();
-                tile.tileStatus = Tile.TileStatus.IDLE;
-            }
-        }*/
 
         for(int i = 0; i < 21; i++)
         {
@@ -732,6 +771,11 @@ public class Player : MonoBehaviour
         healthLevl -= value;
         healthLevl = Mathf.RoundToInt(Mathf.Clamp((float)healthLevl, 0f, (float)maxHealth));
         UpdateUI();
+
+        if(healthLevl <= 0)
+        {
+            isAlive = false;
+        }
     }
 
     public void DoAttack()

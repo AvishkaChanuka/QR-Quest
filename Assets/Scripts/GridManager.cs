@@ -50,12 +50,14 @@ public class GridManager : MonoBehaviour
             gameManager.waveStatus = GameManager.GridWave.BLACKDOWN;
             MoveTile(minY);
             MovePlayer(minY+1);
+            MoveChest(minY + 1);
         }
         else if(currentWaveTurn == 0)
         {
             gameManager.waveStatus= GameManager.GridWave.BLACKUP;
             MoveTile(maxY);
             MovePlayer(maxY+1);
+            MoveChest(maxY+1);
 
             SpawnColectables();
         }
@@ -90,10 +92,20 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    private void MoveChest(float yPos)
+    {
+        for(int i = 0; i < gameManager.chests.Length; i++)
+        {
+            Vector3 movePosition = gameManager.chests[i].transform.position;
+            movePosition.y = yPos;
+            gameManager.chests[i].transform.position = movePosition;
+        }
+    }
+
     private void SpawnColectables()
     { 
-        int count = 0;
-        while (count < 3)
+        int count = 0, itemCount = 6;
+        while (count < itemCount)
         {
             int randX = Random.Range(0, grid.Length);
             int randY = Random.Range(0, grid.Length);
@@ -103,7 +115,7 @@ public class GridManager : MonoBehaviour
             if(tile.tileType == Tile.TileType.BLACK)
             {
                 Vector3 spawnPos = new Vector3(tile.transform.position.x, maxY + 1, tile.transform.position.z);
-                GameObject spawnObject = collectableManager.collectableObjects[count];
+                GameObject spawnObject = collectableManager.collectableObjects[count % collectableManager.collectableObjects.Length];
                 Instantiate(spawnObject, spawnPos, Quaternion.identity);
                 count++;
             }

@@ -9,9 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6893886737026850315}
+  - component: {fileID: 9028986088993104260}
+  - component: {fileID: 6245994746171010771}
   m_Layer: 0
   m_Name: Chest
-  m_TagString: Untagged
+  m_TagString: Chest
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -34,6 +36,42 @@ Transform:
   - {fileID: 1377188306404559215}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!65 &9028986088993104260
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641296315823781736}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.8, y: 2, z: 1.8}
+  m_Center: {x: 0, y: 1, z: -0}
+--- !u!114 &6245994746171010771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641296315823781736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77e34d61ca7c88a43abcc0f24cd2b632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthUI: {fileID: 7146067675832395495}
+  currentHealth: 6
+  maxHealth: 6
 --- !u!1 &918243238501273782
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,9 +480,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 5271255523992041787}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
+  m_MaxValue: 6
   m_WholeNumbers: 0
-  m_Value: 0.353
+  m_Value: 6
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
