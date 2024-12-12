@@ -43,4 +43,22 @@ public class Tile : MonoBehaviour
             meshRenderer.materials[1].color = colorManager.lightBaseColor;
         }
     }
+
+    public bool ISCollectableTile()
+    {
+        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), transform.forward);
+        RaycastHit hitData;
+        Debug.DrawRay(ray.origin, ray.direction * 2);
+
+        if (Physics.Raycast(ray, out hitData, 2))
+        {
+            CollectableObject obj;
+            if (obj = hitData.collider.gameObject.GetComponent<CollectableObject>())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

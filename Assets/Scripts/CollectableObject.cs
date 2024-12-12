@@ -27,4 +27,9 @@ public class CollectableObject : MonoBehaviour
     {
         GameObject.Destroy(gameObject);
     }
+
+    private void OnDestroy()
+    {
+        Debug.Log("Destroyed");
+    }
 }

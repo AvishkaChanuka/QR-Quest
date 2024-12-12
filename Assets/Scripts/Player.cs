@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
 
     private GameManager gameManager;
 
+    private bool doesHaveToCollect = false;
+
     private void Start()
     {
         gridManager = FindAnyObjectByType<GridManager>();
@@ -172,8 +174,16 @@ public class Player : MonoBehaviour
                     Tile tile = gridManager.grid[i][yPos];
                     if (tile.tileType == Tile.TileType.BLACK)
                     {
-                        tile.ChangeColor(1);
-                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                        if(tile.ISCollectableTile())
+                        {
+                            tile.ChangeColor(2);
+                            tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                        }
+                        else
+                        {
+                            tile.ChangeColor(1);
+                            tile.tileStatus = Tile.TileStatus.MOVABLE;
+                        }
                     }
                     else
                     {
@@ -188,8 +198,16 @@ public class Player : MonoBehaviour
                     Tile tile = gridManager.grid[i][yPos];
                     if (tile.tileType == Tile.TileType.BLACK)
                     {
-                        tile.ChangeColor(1);
-                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                        if (tile.ISCollectableTile())
+                        {
+                            tile.ChangeColor(2);
+                            tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                        }
+                        else
+                        {
+                            tile.ChangeColor(1);
+                            tile.tileStatus = Tile.TileStatus.MOVABLE;
+                        }
                     }
                     else
                     {
@@ -204,8 +222,16 @@ public class Player : MonoBehaviour
                     Tile tile = gridManager.grid[xPos][i];
                     if (tile.tileType == Tile.TileType.BLACK)
                     {
-                        tile.ChangeColor(1);
-                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                        if (tile.ISCollectableTile())
+                        {
+                            tile.ChangeColor(2);
+                            tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                        }
+                        else
+                        {
+                            tile.ChangeColor(1);
+                            tile.tileStatus = Tile.TileStatus.MOVABLE;
+                        }
                     }
                     else
                     {
@@ -219,8 +245,16 @@ public class Player : MonoBehaviour
                     Tile tile = gridManager.grid[xPos][i];
                     if (tile.tileType == Tile.TileType.BLACK)
                     {
-                        tile.ChangeColor(1);
-                        tile.tileStatus = Tile.TileStatus.MOVABLE;
+                        if (tile.ISCollectableTile())
+                        {
+                            tile.ChangeColor(2);
+                            tile.tileStatus = Tile.TileStatus.COLLECTABLE;
+                        }
+                        else
+                        {
+                            tile.ChangeColor(1);
+                            tile.tileStatus = Tile.TileStatus.MOVABLE;
+                        }
                     }
                     else
                     {
@@ -298,6 +332,7 @@ public class Player : MonoBehaviour
         else if (gameManager.waveStatus == GameManager.GridWave.BLACKDOWN)
         {
             int moveCount = 0;
+
             //Top Path
             for (int i = xPos + 1; i < 21; i++)
             {
@@ -376,15 +411,14 @@ public class Player : MonoBehaviour
                     case Tile.TileStatus.MOVABLE:
                         {
                             movePosition = new Vector3(tile.transform.position.x, transform.position.y, tile.transform.position.z);
-                            if(Vector3.Distance(transform.position, mousePosition) >= 2)
-                            {
-                                playerStatus = PlayerStatus.RUNNING;
-                            }
-                            else
-                            {
-                                playerStatus = PlayerStatus.WALKING;
-                            }
-
+                            playerStatus = PlayerStatus.RUNNING;
+                            break;
+                        }
+                    case Tile.TileStatus.COLLECTABLE:
+                        {
+                            movePosition = new Vector3(tile.transform.position.x, transform.position.y, tile.transform.position.z);
+                            playerStatus = PlayerStatus.RUNNING;
+                            doesHaveToCollect = true;
                             break;
                         }
                 }
@@ -415,9 +449,43 @@ public class Player : MonoBehaviour
             else
             {
                 playerStatus = PlayerStatus.IDLE;
+
+                if (doesHaveToCollect)
+                {
+                    playerStatus = PlayerStatus.PICKUP;
+                    Debug.Log("Collected");
+                    doesHaveToCollect = false;
+                }
+                
                 gameManager.EndTurn();
             }
             
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Collectable"))
+        {
+            CollectableObject item = other.gameObject.GetComponent<CollectableObject>();
+            switch (item.itemType)
+            {
+                case CollectableObject.ItemType.HEAL:
+                    {
+                        HealPlayer(item.ItemValue);
+                        break;
+                    }
+                case CollectableObject.ItemType.ENERGY:
+                    {
+                        EnergyizePlayer(item.ItemValue);
+                        break;
+                    }
+                case CollectableObject.ItemType.COIN:
+                    {
+                        EarnCoin(item.ItemValue);
+                        break;
+                    }
+            }
         }
     }
 
@@ -519,6 +587,7 @@ public class Player : MonoBehaviour
     public void HealPlayer(int value)
     {
         healthLevl = healthLevl + value;
+        Debug.Log(healthLevl);
     }
 
     public void EnergyizePlayer(int value)
@@ -534,5 +603,10 @@ public class Player : MonoBehaviour
     public void DoAttack()
     {
 
+    }
+
+    public void EarnCoin(int value)
+    {
+        coinLevel += value;
     }
 }
