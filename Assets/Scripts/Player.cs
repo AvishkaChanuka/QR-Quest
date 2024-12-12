@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -30,7 +32,13 @@ public class Player : MonoBehaviour
     int blackDownMoveLength = 3;
 
     [SerializeField]
-    private int healthLevl = 10, fightLevel = 10, coinLevel = 0;
+    private int healthLevl = 10, maxHealth = 10, fightLevel = 10, maxEnergyLevel = 10, coinLevel = 0;
+
+    [SerializeField]
+    private TextMeshProUGUI playerCoinAmountUI;
+
+    [SerializeField]
+    private Slider playerHealthUI, playerEnergyUI;
 
     private Vector3 movePosition;
 
@@ -46,6 +54,10 @@ public class Player : MonoBehaviour
         playerStatus = PlayerStatus.IDLE;
         playerAnimator = GetComponent<Animator>();
         ChangeAnimation();
+
+        playerHealthUI.maxValue = maxHealth;
+        playerHealthUI.maxValue = maxEnergyLevel;
+        UpdateUI();
     }
 
     private void Update()
@@ -587,17 +599,23 @@ public class Player : MonoBehaviour
     public void HealPlayer(int value)
     {
         healthLevl = healthLevl + value;
+        healthLevl = Mathf.RoundToInt(Mathf.Clamp((float)healthLevl, 0f, (float)maxHealth));
+        UpdateUI();
         Debug.Log(healthLevl);
     }
 
     public void EnergyizePlayer(int value)
     {
         fightLevel = fightLevel + value;
+        fightLevel = Mathf.RoundToInt(Mathf.Clamp((float)fightLevel, 0f, (float)maxEnergyLevel));
+        UpdateUI();
     }
 
     public void GetAttack(int value)
     {
         healthLevl -= value;
+        healthLevl = Mathf.RoundToInt(Mathf.Clamp((float)healthLevl, 0f, (float)maxHealth));
+        UpdateUI();
     }
 
     public void DoAttack()
@@ -608,5 +626,13 @@ public class Player : MonoBehaviour
     public void EarnCoin(int value)
     {
         coinLevel += value;
+        UpdateUI();
+    }
+
+    void UpdateUI()
+    {
+        playerCoinAmountUI.text = coinLevel.ToString();
+        playerHealthUI.value = healthLevl;
+        playerEnergyUI.value = fightLevel;
     }
 }
