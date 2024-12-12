@@ -26,6 +26,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 10f, rotationSpeed = 10f;
 
+    [SerializeField]
+    int blackDownMoveLength = 3;
+
     private Vector3 movePosition;
 
     private GameManager gameManager;
@@ -291,14 +294,21 @@ public class Player : MonoBehaviour
 
         else if (gameManager.waveStatus == GameManager.GridWave.BLACKDOWN)
         {
+            int moveCount = 0;
             //Top Path
             for (int i = xPos + 1; i < 21; i++)
             {
                 Tile tile = gridManager.grid[i][yPos];
                 tile.ChangeColor(1);
                 tile.tileStatus = Tile.TileStatus.MOVABLE;
+                moveCount++;
+                if(moveCount >= blackDownMoveLength)
+                {
+                    break;
+                }
             }
 
+            moveCount = 0;
             //Bottom Path
 
             for (int i = xPos - 1; i > -1; i--)
@@ -306,23 +316,42 @@ public class Player : MonoBehaviour
                 Tile tile = gridManager.grid[i][yPos];
                 tile.ChangeColor(1);
                 tile.tileStatus = Tile.TileStatus.MOVABLE;
+
+                moveCount++;
+                if (moveCount >= blackDownMoveLength)
+                {
+                    break;
+                }
             }
 
             //Left Path
-
+            moveCount = 0;
             for (int i = yPos - 1; i > -1; i--)
             {
                 Tile tile = gridManager.grid[xPos][i];
                 tile.ChangeColor(1);
                 tile.tileStatus = Tile.TileStatus.MOVABLE;
+
+                moveCount++;
+                if (moveCount >= blackDownMoveLength)
+                {
+                    break;
+                }
             }
 
             //Right Path
+            moveCount = 0;
             for (int i = yPos + 1; i < 21; i++)
             {
                 Tile tile = gridManager.grid[xPos][i];
                 tile.ChangeColor(1);
                 tile.tileStatus = Tile.TileStatus.MOVABLE;
+
+                moveCount++;
+                if (moveCount >= blackDownMoveLength)
+                {
+                    break;
+                }
             }
         }
     }

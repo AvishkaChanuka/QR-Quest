@@ -106,6 +106,7 @@ MonoBehaviour:
     m_Bits: 64
   moveSpeed: 3
   rotationSpeed: 10
+  blackDownMoveLength: 2
 --- !u!136 &2545952130993744661
 CapsuleCollider:
   m_ObjectHideFlags: 0
