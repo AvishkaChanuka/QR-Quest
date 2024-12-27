@@ -18,4 +18,9 @@ public class Home : MonoBehaviour
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
+
+    public void ExitHowToPlay()
+    {
+        SceneManager.LoadScene(0);
+    }
 }
