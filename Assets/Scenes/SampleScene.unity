@@ -11740,7 +11740,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveStatus: 0
   countTurns: 0
-  wavePeriod: 4
+  wavePeriod: 8
   players:
   - {fileID: 1182875567}
   - {fileID: 5171253826346089944}
@@ -35850,9 +35850,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Message, Assembly-CSharp
-        m_MethodName: HideMessage
+      - m_Target: {fileID: 550956950}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: GoHome
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

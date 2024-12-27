@@ -693,7 +693,7 @@ public class Player : MonoBehaviour
 
     void AttackToChest()
     {
-        if(fightLevel >= attackStrength)
+        if(fightLevel >= attackStrength && healthLevl >= attackStrength)
         {
             playerStatus = PlayerStatus.ATTACKING;
             chest.GetAttack(attackStrength);
@@ -711,7 +711,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Message.ShowMessage("Lack of Energy!, Collect Energizers and try again.");
+            Message.ShowMessage("Lack of Energy or Health!, Collect Heal, Energizers and try again.");
         }
         
     }
