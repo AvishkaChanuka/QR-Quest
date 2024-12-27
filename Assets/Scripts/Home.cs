@@ -10,6 +10,11 @@ public class Home : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
+    public void LoadHowToPlay()
+    {
+        SceneManager.LoadScene(2);
+    }
+
     public void ExitGame()
     {
         Application.Quit();
